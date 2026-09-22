@@ -1,0 +1,23 @@
+name: checker-CI
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  checker:
+    runs-on: ubuntu-latest
+    container:
+      image: sunpixel/checker:latest
+      credentials:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      env:
+        CHECKER_CONTEXT_SECRETS: ${{ toJson(secrets) }}
+        CHECKER_CONTEXT_GITHUB: ${{ toJson(github) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run checker
+        run: /checker/run.sh
